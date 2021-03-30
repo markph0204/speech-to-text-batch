@@ -37,3 +37,8 @@ remove_silence () {
 	mv $1 $tempfile'_original_'$1
 	mv $tempfile.wav $1
 }
+
+process_wav_parts () {
+	rm -rf parts/*
+	ffmpeg -i source/$1 -f segment -segment_time 59 -c copy parts/out%09d.wav
+}

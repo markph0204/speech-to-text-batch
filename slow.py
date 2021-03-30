@@ -1,22 +1,21 @@
-import os
 import speech_recognition as sr
 from tqdm import tqdm
+import glob
 
 with open("api-key.json") as f:
     GOOGLE_CLOUD_SPEECH_CREDENTIALS = f.read()
 
 r = sr.Recognizer()
-files = sorted(os.listdir('parts/'))
+files = sorted([f for f in glob.glob("parts/*.wav")])
 
 all_text = []
-
-for f in tqdm(files):
-    name = "parts/" + f
+for name in tqdm(files):
     # Load audio file
     with sr.AudioFile(name) as source:
         audio = r.record(source)
     # Transcribe audio file
     text = r.recognize_google_cloud(audio, credentials_json=GOOGLE_CLOUD_SPEECH_CREDENTIALS)
+    # text = r.recognize_google_cloud(audio)
     all_text.append(text)
 
 transcript = ""

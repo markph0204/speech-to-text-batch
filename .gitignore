@@ -1,0 +1,5 @@
+api-key.json
+parts/
+source/
+.venv/
+transcript.txt
