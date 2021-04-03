@@ -3,3 +3,6 @@ parts/
 source/
 .venv/
 transcript.txt
+incoming/
+test/
+working/
