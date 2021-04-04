@@ -4,6 +4,7 @@ import glob
 import os
 from os import path
 import subprocess
+import shutil
 
 
 with open("api-key.json") as f:
@@ -14,6 +15,9 @@ class Paths:
     incoming = "incoming/"
     working = "working/"
     parts = "parts/"
+    transcripts = "transcripts/"
+    def all():
+        return [Paths.incoming, Paths.working, Paths.parts, Paths.transcripts]
 
 
 class WorkItem:
@@ -44,7 +48,7 @@ class WorkItem:
         return f"<Item: {self.pickup_filepath} in {self.workpath} >"
 
 
-def init_paths(paths = [Paths.incoming, Paths.working]):
+def init_paths(paths = Paths.all()):
     """ make paths; defaults to all defined in class """
     for path in paths:
         if not os.path.exists(path):
@@ -118,6 +122,10 @@ def process_parts_wav(wi: WorkItem):
     with open(wi.transcript_filepath, "w") as f:
         f.write(transcript)
 
+def copy_transcript(wi: WorkItem):
+    dest_filename = wi.mp3_filename + '.txt'
+    dest = os.path.join(Paths.transcripts, dest_filename)
+    shutil.copy(wi.transcript_filepath, dest)
 
 if __name__ == "__main__":
     # init paths
@@ -142,10 +150,11 @@ if __name__ == "__main__":
         transcode_mp3_to_wav(work_item.pickup_filepath, work_item.wav_filepath)
         # run parts to output
         make_wav_parts(work_item)
-
         # run to process item_working_path/'parts'
         # when done make a .done file
         # create transcode file in work path
         process_parts_wav(work_item)
+        # copy transcript
+        copy_transcript(work_item)
     
     print("----\nDone")
