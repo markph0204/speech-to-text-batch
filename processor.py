@@ -153,7 +153,12 @@ if __name__ == "__main__":
         # run to process item_working_path/'parts'
         # when done make a .done file
         # create transcode file in work path
-        process_parts_wav(work_item)
+        try:
+            process_parts_wav(work_item)
+        except:
+          print("Failed to process 'parts'")
+        finally:
+          continue
         # copy transcript
         copy_transcript(work_item)
     
